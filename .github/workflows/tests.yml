@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: GHC ${{ matrix.ghc-version }} on ${{ matrix.platform.arch }} ${{ matrix.platform.os }}
+    name: GHC ${{ matrix.ghc-version }} on ${{ matrix.platform.arch }} ${{ matrix.platform.os }} ${{ matrix.flags }}
     runs-on: ${{ matrix.platform.os }}
     strategy:
       fail-fast: false
@@ -29,6 +29,9 @@ jobs:
           - '8.10'
           - '8.8'
           - '8.6'
+        flags:
+          - ""
+          - "--flags=\"os-string\""
 
         exclude:
           # Only allow ARM jobs with GHC >= 9.2
@@ -81,7 +84,7 @@ jobs:
 
       - name: Configure the build
         run: |
-          cabal configure --enable-tests --enable-benchmarks --disable-documentation
+          cabal configure --enable-tests --enable-benchmarks --disable-documentation ${{ matrix.flags }}
           cabal build all --dry-run
         # The last step generates dist-newstyle/cache/plan.json for the cache key.
 
